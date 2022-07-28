@@ -1,4 +1,6 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit';
+import { persistReducer, persistStore } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 
 const initialState = {
   todos: []
@@ -15,11 +17,20 @@ const todoSlice = createSlice({
       return {...state, todos: []}
     }
   }
-})
+});
+
+const persistConfig = {
+  key: 'todos',
+  storage: storage
+};
+
+const persistedReducer = persistReducer(persistConfig, todoSlice.reducer);
 
 const store = configureStore({
-  reducer: todoSlice.reducer
+  reducer:persistedReducer
 });
+
+export const persistor = persistStore(store);
 
 export const { addTodo, emptyTodos} = todoSlice.actions;
 
