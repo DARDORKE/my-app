@@ -1,23 +1,45 @@
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
 import './App.css';
+import store from './store';
 
 function App() {
+  const [todo, setTodo] = useState('');
+  const [todos, setTodos] = useState([]);
+
+useEffect(() => {
+  store.subscribe(() => {
+    setTodos(store.getState().todos)
+  })
+}, []);
+
+  const changeHandler = event => {
+    setTodo(event.target.value);
+  };
+
+  const submitHandler = event => {
+    event.preventDefault();
+
+    if (todo.trim().lengh === 0) {
+      return;
+    }
+
+    store.dispatch({
+      type: 'ADD_TODO',
+      payload: todo.trim()
+    })
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+        <form onSubmit={submitHandler}>
+          <input type="text" value ={todo} onChange={changeHandler} />
+          <button>Add</button>
+        </form>
+        <ol>
+          {todos.map(todo => {
+            return <li>{todo}</li>;
+          })}
+        </ol>
     </div>
   );
 }
