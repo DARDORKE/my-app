@@ -17,7 +17,7 @@ const todoReducer = (state = initialState, action) => {
       default:
         return state;
   }
-}
+};
 
 const store = createStore(todoReducer);
 
